@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>064-faq-can-you-define-per-servlet-parameters</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>FAQ: Can you define per servlet parameters?
+
+</strong></p>
+
+<p><br></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Question: </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><em>I hope there is a concept called servlet config which is one per servlet, the concept you exaplained is servlet context , which is one per app thats fine, but actual servletconfig is missing I believe..?</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>---<br></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Answer:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Yes, you can define servlet parameters on a per servlet basis.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>These params can only be read by the given servlet.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Here's an example for your web.xml.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><br></p>
+
+
+
+
+
+<pre class="prettyprint linenums">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1"&gt;
+
+  &lt;display-name&gt;servletdemo&lt;/display-name&gt;
+
+  &lt;context-param&gt;
+    &lt;param-name&gt;max-shopping-cart-size&lt;/param-name&gt;
+    &lt;param-value&gt;99&lt;/param-value&gt;
+  &lt;/context-param&gt;
+
+  &lt;context-param&gt;
+    &lt;param-name&gt;project-team-name&lt;/param-name&gt;
+    &lt;param-value&gt;The Coding Gurus&lt;/param-value&gt;
+  &lt;/context-param&gt;
+  
+    &lt;servlet&gt;
+      &lt;servlet-name&gt;TestParamServlet&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;com.luv2code.servletdemo.TestParamServlet&lt;/servlet-class&gt;
+
+      &lt;init-param&gt;
+        &lt;param-name&gt;greeting&lt;/param-name&gt;
+        &lt;param-value&gt;Welcome&lt;/param-value&gt;
+      &lt;/init-param&gt;
+
+      &lt;init-param&gt;
+        &lt;param-name&gt;serviceLevel&lt;/param-name&gt;
+        &lt;param-value&gt;Platinum&lt;/param-value&gt;
+      &lt;/init-param&gt;
+
+    &lt;/servlet&gt;  
+    
+    &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;TestParamServlet&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;/demo&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+  
+&lt;/web-app&gt;</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><br></p>
+
+
+
+<p>IMPORTANT: Your servlet can not use Annotations for @WebServlet. It 
+has to be manually configured in web.xml with &lt;servlet&gt; and 
+&lt;servlet-mapping&gt; tags, as shown above</p>
+
+
+
+<p><br>---</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Then in your servlet, you can read this servlet's params using this code</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>String theGreeting = getInitParameter("greeting");</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>String theInfo = getInitParameter("serviceLevel");</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Note: These params can only be read by the given servlet. If another servlet attempts to read the params then they will get null.</p>
+
+
+
+
+
+<p>Here is the full source code for the servlet.</p>
+
+
+
+
+
+<pre class="prettyprint linenums">package com.luv2code.servletdemo;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class TestParamServlet
+ */
+public class TestParamServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Step 1: set content type
+        response.setContentType("text/html");
+        
+        // Step 2: get printwriter
+        PrintWriter out = response.getWriter();
+        
+        // Step 3: read configuration params
+        ServletContext context = getServletContext(); // inherit from HttpServlet
+        String maxCartSize = context.getInitParameter("max-shopping-cart-size");
+        String teamName = context.getInitParameter("project-team-name");
+        
+        // READ PER-SERVLET parameter
+        String theGreetingMessage = getInitParameter("greeting");
+        String theServiceLevel = getInitParameter("serviceLevel");
+        
+        // Step 4: generate HTML content
+        out.println("&lt;html&gt;&lt;body&gt;");
+        out.println("Max cart: " + maxCartSize);
+        out.println("&lt;br/&gt;&lt;br/&gt;");
+        out.println("Team name: " + teamName);
+        out.println("&lt;hr&gt;");
+        out.println("Per Servlet Params&lt;br/&gt;&lt;br/&gt;");
+        out.println("greeting: " + theGreetingMessage);
+        out.println("&lt;br/&gt;&lt;br/&gt;");
+        out.println("serviceLevel: " + theServiceLevel);
+        
+        out.println("&lt;/body&gt;&lt;/html&gt;");    
+    }   
+
+}</pre>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

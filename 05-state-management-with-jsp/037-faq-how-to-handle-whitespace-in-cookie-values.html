@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>037-faq-how-to-handle-whitespace-in-cookie-values</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>Question: </strong></p><p>How to handle white-space in Cookie values?</p><p>---<br></p><p><strong>Answer:</strong></p><p>To resolve this issue, we need to URL encode the cookie values.</p>
+
+
+
+
+
+
+
+
+
+<p>Java provides two classes for URL encoding and decoding: java.net.URLEncoder, java.net.URLDecoder.</p>
+
+
+
+
+
+
+
+
+
+<p>As an overview, these are the changes that need to be made.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>In the file: <strong>cookies-homepage.jsp</strong>:  add code to URL decode the cookie value</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">    // decode cookie data ... handle case of languages with spaces in them
+    favLang = URLDecoder.decode(tempCookie.getValue(), "UTF-8");
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>In the file: <strong>cookies-personalize-response.jsp</strong>: add code to URL encode the cookie value</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">    // encode cookie data ... handle case of languages with spaces in them
+    favLang = URLEncoder.encode(favLang, "UTF-8");
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Here is the complete code for this example. Make note of the import statements in the JSP pages.</p>
+
+
+
+
+
+
+
+<p>====
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>File: cookies-homepage.jsp</strong></p>
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">&lt;%@ page import="java.net.URLDecoder" %&gt;
+ 
+&lt;html&gt;
+&lt;body&gt;
+ 
+&lt;h3&gt;Training Portal&lt;/h3&gt;
+&lt;!-- read the favorite programming language cookie --&gt;
+ 
+&lt;%
+    // the default ... if there are no cookies
+    String favLang = "Java";
+ 
+    // get the cookies from the browser request
+    Cookie[] theCookies = request.getCookies();
+    
+    // find our favorite language cookie
+    if (theCookies != null) {
+        
+        for (Cookie tempCookie : theCookies) {
+            
+            if ("myApp.favoriteLanguage".equals(tempCookie.getName())) {
+                
+                // decode cookie data ... handle case of languages with spaces in them
+                favLang = URLDecoder.decode(tempCookie.getValue(), "UTF-8");
+                
+                break;
+            }
+        }
+    }
+%&gt;
+ 
+&lt;!-- now show a personalized page ... use the "favLang" variable --&gt;
+&lt;!-- show new books for this lang --&gt;
+&lt;h4&gt;New Books for &lt;%= favLang %&gt;&lt;/h4&gt;
+&lt;ul&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+&lt;/ul&gt;
+ 
+&lt;h4&gt;Latest News Reports for &lt;%= favLang %&gt;&lt;/h4&gt;
+&lt;ul&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+&lt;/ul&gt;
+ 
+&lt;h4&gt;Hot Jobs for &lt;%= favLang %&gt;&lt;/h4&gt;
+&lt;ul&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+    &lt;li&gt;blah blah blah&lt;/li&gt;
+&lt;/ul&gt;
+ 
+&lt;hr&gt;
+&lt;a href="cookies-personalize-form.html"&gt;Personalize this page&lt;/a&gt;
+ 
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+<p>====
+</p>
+
+
+
+
+
+<p><strong>File: cookies-personalize-response.jsp</strong></p>
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">&lt;%@ page import="java.net.URLEncoder" %&gt;
+ 
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Confirmation&lt;/title&gt;&lt;/head&gt;
+ 
+&lt;%
+    // read form data
+    String favLang = request.getParameter("favoriteLanguage");
+ 
+    // encode cookie data ... handle case of languages with spaces in them
+    favLang = URLEncoder.encode(favLang, "UTF-8");
+    
+    // create the cookie
+    Cookie theCookie = new Cookie("myApp.favoriteLanguage", favLang);
+    
+    // set the life span ... total number of seconds (yuk!)
+    theCookie.setMaxAge(60*60*24*365);    // &lt;-- for one year
+    
+    // send cookie to browser
+    response.addCookie(theCookie);
+%&gt;
+ 
+&lt;body&gt;
+    Thanks! We set your favorite language to: ${param.favoriteLanguage}
+    
+    &lt;br/&gt;&lt;br/&gt;
+    
+    &lt;a href="cookies-homepage.jsp"&gt;Return to homepage.&lt;/a&gt;
+    
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>====
+</p>
+
+
+
+
+
+<p><strong>File: cookies-personalize-form.html</strong>  <em>(added languages with multiple words and spaces)</em>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">&lt;html&gt;
+ 
+&lt;head&gt;
+    &lt;title&gt;Personalize The Site&lt;/title&gt;
+&lt;/head&gt;
+ 
+&lt;body&gt;
+ 
+&lt;form action="cookies-personalize-response.jsp"&gt;
+    Select your Favorite Programming Language
+ 
+    &lt;select name="favoriteLanguage"&gt;
+            &lt;option&gt;Active Server Pages&lt;/option&gt;
+            &lt;option&gt;Java&lt;/option&gt;
+            &lt;option&gt;C#&lt;/option&gt;
+            &lt;option&gt;    Common Business-Oriented Language&lt;/option&gt;
+            &lt;option&gt;PHP&lt;/option&gt;
+            &lt;option&gt;Ruby&lt;/option&gt;
+            &lt;option&gt;Hypertext Markup Language&lt;/option&gt;
+    &lt;/select&gt;
+ 
+    &lt;br/&gt;&lt;br/&gt;
+    
+    &lt;input type="submit" value="Submit" /&gt;
+&lt;/form&gt;
+ 
+&lt;/body&gt;
+ 
+&lt;/html&gt;
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>---
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Please test this out and let me know your results.</p><p><br></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

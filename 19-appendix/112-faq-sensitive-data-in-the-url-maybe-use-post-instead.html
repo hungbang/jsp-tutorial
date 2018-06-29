@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>112-faq-sensitive-data-in-the-url-maybe-use-post-instead</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>Student Question
+
+</strong></p>
+
+<p>I want a solution for hiding sensitive data in URL (social security number, credit card number etc). Maybe, I should change request from GET to POST?</p>
+
+<p><strong>Answer</strong></p>
+
+
+
+<p>Using the POST method does not add security. It simply "hides" the request data. But any web user can still easily see the data. All they have to do is use Chrome Dev Tools or FireFox Firebug. So, using POST is only giving you "security by obscurity" which is weak if you have highly sensitive data.</p>
+
+
+
+<p>If you have highly sensitive data such as social security number, credit card number, then you should use SSL encryption on your server.</p>
+
+
+
+<p>Note, simply using the POST method does not add secure encryption. The data is still sent in the clear without any protection or encryption.</p>
+
+<p>SSL is required for data encryption.<br></p>
+
+
+
+<p>You can use SSL for enterprise-grade network security and encryption.</p>
+
+
+
+<p>Here's a tutorial on Tomcat SSL: https://www.mulesoft.com/tcat/tomcat-ssl</p>
+
+
+
+<p>---<br></p><p>Is either GET or POST more secure than the other?</p><p>See this link:</p>
+
+<p>https://stackoverflow.com/questions/198462/is-either-get-or-post-more-secure-than-the-other</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

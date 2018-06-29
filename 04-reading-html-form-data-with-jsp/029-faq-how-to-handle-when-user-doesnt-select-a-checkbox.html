@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>029-faq-how-to-handle-when-user-doesnt-select-a-checkbox</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong class="redactor-inline-converted">FAQ: How to handle when user doesn't select a checkbox?</strong></p><p><strong>Answer</strong></p><p>If the user doesn't select a checkbox, you will have a null pointer exception.</p><p>You can handle this by checking for null before displaying the data.</p><p>Here's the code snippet</p><p>        &lt;%<br>            String[] langs = request.getParameterValues("favoriteLanguage");<br>        <br>            if (langs != null) {<br>                for (String tempLang : langs) {<br>                    out.println("&lt;li&gt;" + tempLang + "&lt;/li&gt;");<br>                }<br>            }<br>        %&gt;</p><br>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>065-faq-how-to-redirect-from-jsp-to-servlet</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong class="redactor-inline-converted">How To Redirect from JSP to a Servlet:</strong></p>
+
+<p>You can make use of the method: </p>
+
+<p>    response.sendRedirect( &lt;thePageUrl&gt; )</p>
+
+<p>Here's a quick example. The file test-redirect.jsp will send a redirect to the HelloWorldServlet. The HelloWorldServlet has a URL mapping of "/hello".</p>
+
+<p>Here's the code for the JSP</p>
+
+<p><strong class="redactor-inline-converted">File: test-redirect.jsp</strong></p>
+
+<p>&lt;%<br>    response.sendRedirect(request.getContextPath() + "/hello");<br>%&gt;</p>
+
+<p>Here's the code for the Servlet. Make note of the URL mapping "/hello"</p>
+
+<p><strong class="redactor-inline-converted">File: HelloWorldServlet.java</strong><br></p><p>package com.luv2code.demo;</p>
+
+<p>import java.io.IOException;<br>import java.io.PrintWriter;</p>
+
+<p>import javax.servlet.ServletException;<br>import javax.servlet.annotation.WebServlet;<br>import javax.servlet.http.HttpServlet;<br>import javax.servlet.http.HttpServletRequest;<br>import javax.servlet.http.HttpServletResponse;</p>
+
+<p>@WebServlet("/hello")<br>public class HelloWorldServlet extends HttpServlet {<br>    private static final long serialVersionUID = 1L;</p>
+
+<p>    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {</p>
+
+<p>        response.setContentType("text/html");<br>        PrintWriter out = response.getWriter();<br>        <br>        out.println("Hello world: " + new java.util.Date());<br>    }</p>
+
+<p>}</p>
+
+<p>---</p>
+
+<p>When you run the JSP file, <strong>test-redirect.jsp</strong>.  It will automatically redirect to the servlet.</p>
+
+<p>That's it!  Enjoy :-)</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

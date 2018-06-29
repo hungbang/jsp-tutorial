@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>109-resolve-issue-clicking-refreshreload-button-results-in-adding-same-student</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>Problem:</strong> </p><p>If the user clicks the brower's refresh/reload button after adding a student, that student is being added again. </p>
+
+<p><strong>Solution:</strong></p>
+
+
+
+
+
+
+
+<p>To prevent this issue, then we need to implement the <a href="https://en.wikipedia.org/wiki/Post/Redirect/Get" rel="nofollow" target="_blank">Post/Redirect/Get design pattern</a>. This patterns is designed to prevent duplicate form submissions.</p>
+
+
+
+
+
+
+
+<p>Detailed information on this pattern is available here:
+- <a href="https://en.wikipedia.org/wiki/Post/Redirect/Get" rel="nofollow" target="_blank">https://en.wikipedia.org/wiki/Post/Redirect/Get</a></p>
+
+
+
+
+
+
+
+<p>---
+</p>
+
+
+
+
+
+<p>For our class project, we'll make the following modifications to resolve this problem.</p>
+
+
+
+
+
+
+
+<p>- Update student form to POST data</p>
+
+
+
+
+
+
+
+<p>- Modify servlet code to handle POST data and redirect to the StudentControllerServlet with the LIST command.</p>
+
+
+
+
+
+
+
+<p>----</p>
+
+
+
+
+
+
+
+<p>Details</p>
+
+
+
+
+
+
+
+<p>1. Update student form to POST data</p>
+
+
+
+
+
+
+
+<p>Edit the file, add-student-form.jsp</p>
+
+
+
+
+
+
+
+<p>Change the form action method to POST</p>
+
+
+
+
+
+
+
+<p>Replace</p>
+
+
+
+
+
+
+
+<p>        &lt;form action="StudentControllerServlet" method="GET"&gt;</p>
+
+
+
+
+
+
+
+<p>With</p>
+
+
+
+
+
+
+
+<p>        &lt;form action="StudentControllerServlet" method="<strong>POST</strong>"&gt;</p>
+
+<p><br></p>
+
+
+
+
+
+
+
+<p>2. Modify servlet code to handle POST data and redirect to the StudentControllerServlet with the LIST command.</p>
+
+
+
+
+
+
+
+<p>In the doGet() method, delete this code:</p>
+
+<p>            case "ADD":<br>                addStudent(request, response);<br>                break;</p>
+
+<p>3. Add a new method for doPost(). This method will handle the case <br>for adding students and it will redirect back to lists the students</p>
+
+
+
+
+
+<p>Here's the doPost() method</p>
+
+<p>    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {</p>
+
+
+
+<p>        try {<br>            // read the "command" parameter<br>            String theCommand = request.getParameter("command");<br>                    <br>            // route to the appropriate method<br>            switch (theCommand) {<br>                            <br>            case "ADD":<br>                addStudent(request, response);<br>                break;<br>                                <br>            default:<br>                listStudents(request, response);<br>            }<br>                <br>        }<br>        catch (Exception exc) {<br>            throw new ServletException(exc);<br>        }<br>        <br>    }</p>
+
+<p><br></p>
+
+<p>4. Modify the code for the addStudent() method
+
+
+
+
+
+</p>
+
+<p>The last line of code uses a sendRedirect. This will solve the problem of multiple browser reloads by the user.</p>
+
+
+
+
+
+
+
+<p><br></p>
+
+<p>    private void addStudent(HttpServletRequest request, HttpServletResponse response) throws Exception {</p>
+
+
+
+<p>        // read student info from form data<br>        String firstName = request.getParameter("firstName");<br>        String lastName = request.getParameter("lastName");<br>        String email = request.getParameter("email");        <br>        <br>        // create a new student object<br>        Student theStudent = new Student(firstName, lastName, email);<br>        <br>        // add the student to the database<br>        studentDbUtil.addStudent(theStudent);<br>                <br><strong>        // send back to main page (the student list)<br>        // SEND AS REDIRECT to avoid multiple-browser reload issue<br>        response.sendRedirect(request.getContextPath() + "/StudentControllerServlet?command=LIST");<br></strong>    }</p>
+
+<p> </p><p>---
+</p>
+
+
+
+<p>Test your app. You will now be able to add a student. </p>
+
+
+
+<p>Then
+ click the browser reload button multiple times. Notice that only one 
+student will be added despite multiple browser reload attempts by the 
+user.</p>
+
+
+
+
+
+
+
+<p>That's it. </p>
+
+
+
+
+
+
+
+<p>Let me know your results :-)</p>
+
+
+
+<p>---</p>
+
+
+
+<p>Full source code is available here:</p>
+
+
+
+<p>- <a href="https://gist.github.com/darbyluv2code/282fe4e82117fb813916a2a34398dcb5" rel="nofollow" target="_blank">https://gist.github.com/darbyluv2code/282fe4e82117fb813916a2a34398dcb5</a>
+</p>
+
+
+
+
+
+
+
+<p>---</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

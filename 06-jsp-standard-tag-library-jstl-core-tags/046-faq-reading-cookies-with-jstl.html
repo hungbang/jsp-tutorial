@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>046-faq-reading-cookies-with-jstl</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong class="redactor-inline-converted">Question: <br></strong></p>
+
+<p>Is it possible to read cookie without scriptlet but using JSTL code?</p>
+
+
+
+<p><strong>Answer:<br></strong>Yes. The standard syntax to access HTTP Cookie value in JSP is:</p>
+
+
+
+
+
+<pre class="prettyprint linenums">${cookie.&lt;cookie name&gt;.value}</pre>
+
+
+
+
+
+
+
+<p>So if you want to print value of cookie named “foobar” on JSP page, you would use:</p>
+
+
+
+
+
+<pre class="prettyprint linenums">${cookie.foobar.value}</pre>
+
+
+
+<p>You can also loop through all of the cookies using this</p>
+
+
+
+
+
+<p>&lt;c:forEach items="${cookie}" var="currentCookie"&gt;  <br>    Cookie name as map entry key: ${currentCookie.key} &lt;br/&gt;<br>    Cookie object as map entry value: ${currentCookie.value} &lt;br/&gt;<br>    Name property of Cookie object: ${currentCookie.value.name} &lt;br/&gt;<br>    Value property of Cookie object: ${currentCookie.value.value} &lt;br/&gt;<br>&lt;/c:forEach&gt;</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

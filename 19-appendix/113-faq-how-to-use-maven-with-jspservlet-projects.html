@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>113-faq-how-to-use-maven-with-jspservlet-projects</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>How to use Maven with JSP-Servlet projects</strong></p>
+
+<p>This document explains the step required to use the Maven with JSP-Servlet projects.</p>
+
+
+
+
+
+
+
+<p>This document assumes you understand the basics of Maven. If not, here's a Maven tutorial:
+- <a href="https://maven.apache.org/guides/index.html" rel="nofollow" target="_blank">https://maven.apache.org/guides/index.html</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>You should already have Maven installed and configured. </p>
+
+
+
+
+
+<p>- Download: <a href="https://maven.apache.org/download.cgi" rel="nofollow" target="_blank">https://maven.apache.org/download.cgi</a> </p>
+
+
+
+
+
+<p>- Install: <a href="https://maven.apache.org/install.html" rel="nofollow" target="_blank">https://maven.apache.org/install.html</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>--</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>Overview</strong></p>
+
+
+
+<p><strong></strong>At a high level, you will perform the following steps:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>1. Download Maven version of the project </p>
+
+
+
+
+
+<p>2. Compile the project</p>
+
+
+
+
+
+<p>3. Package the project as a WAR file </p>
+
+
+
+
+
+<p>4. Deploy the WAR file to Tomcat
+
+
+
+
+
+
+
+</p>
+
+
+
+
+
+<p>--</p>
+
+
+
+
+
+<p><strong>Detailed Steps</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>1. Download the Maven version of the project files</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>Download: http://www.luv2code.com/downloads/udemy-jsp/jsp-servlet-maven-demo.zip<br></p>
+
+<p>Unzip the file.
+
+
+
+</p>
+
+<p>The standard Maven directory structure in your project: </p>
+
+
+
+
+
+
+
+<p> |-- pom.xml<br> `-- src<br>     `-- main<br>         |-- java<br>         |-- webapp<br>             `-- resources<br>             `-- WEB-INF</p>
+
+
+
+
+
+<p>The pom.xml contains a list of all JAR file dependencies for your <br>project. Maven will download these JAR files from the Internet and copy <br>to your WEB-INF/lib directory</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>- Your Java source code is in: src\main\java<br>- Your configs (*.xml) are in: src\main\webapp\WEB-INF<br>- Your index.jsp is in: src\main\webapp<br>- Your view JSPs are in: src\main\webapp\WEB-INF\view</p>
+
+
+
+<p>You can read more about the Maven directory structure here:</p>
+
+
+
+<p>- https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html</p>
+
+
+
+
+
+<p><strong>2. Compile the project</strong></p>
+
+
+
+
+
+
+
+<p>- Open a terminal window.<br>- Navigate to the directory where you unzipped the file.<br>- Compile the project by typing: mvn compile</p>
+
+
+
+
+
+
+
+<p><strong>3. Package the project as a WAR file</strong></p>
+
+
+
+
+
+
+
+<p>- Create the WAR file using: mvn package</p>
+
+
+
+
+
+
+
+<p>A WAR file is a compressed archive of your web app.</p>
+
+
+
+
+
+
+
+<p><strong>4. Deploy the WAR file to Tomcat</strong></p>
+
+
+
+
+
+
+
+<p>- We will deploy the WAR file to Tomcat. We will run Tomcat outside of Eclipse.<br>- If you have Eclipse running, make sure you stop Tomcat in Eclipse</p>
+
+
+
+
+
+
+
+<p>- Open a terminal window.<br>- Navigate to your Tomcat installation directory<br>- Once you are in the Tomcat installation directory<br>-- Start Tomcat with the following command: bin\startup.bat  (or use bin/startup.sh if on Linux/Mac)</p>
+
+
+
+
+
+
+
+<p>- In your web browser, visit http://localhost:8080<br>-- You should see the Tomcat success page.</p>
+
+
+
+
+
+
+
+<p>- Open up your GUI File Manager for your operating system (Windows Explorer / Mac Finder)</p>
+
+
+
+
+
+
+
+<p>-- Navigate to your project directory<br>-- Move into the sub-directory: target</p>
+
+
+
+
+
+
+
+<p>-- Select the file: spring-web-customer-tracker.war<br>-- Copy this file to your Tomcat installation directory: ${my-tomcat-install-dir}\webapps</p>
+
+
+
+
+
+
+
+<p>This is Tomcat's hot-deployment directory. After about 15 seconds, Tomcat will notice your new WAR file and automatically expand it.</p>
+
+
+
+
+
+
+
+<p>- Test your app<br>-- Visit: http://localhost:8080/spring-web-customer-tracker</p>
+
+
+
+
+
+
+
+<p>Congrats! You deployed your app to Tomcat using Maven.</p>
+
+
+
+
+
+
+
+<p>--</p>
+
+
+
+
+
+
+
+<p><strong>Bonus: Import the project to Eclipse</strong></p>
+
+
+
+
+
+
+
+<p>If you'd like to import the Maven project into Eclipse, follow these steps.</p>
+
+
+
+
+
+
+
+<p>1. Click File &gt; Import</p>
+
+
+
+
+
+
+
+<p>2. Type Maven in the search box under Select an import source:</p>
+
+
+
+
+
+
+
+<p>3. Select Existing Maven Projects</p>
+
+
+
+
+
+
+
+<p>4. Click Next</p>
+
+
+
+
+
+
+
+<p>5. Click Browse and select the folder that is the root of the Maven project (probably contains the pom.xml file)</p>
+
+
+
+
+
+
+
+<p>6. Click OK</p>
+
+
+
+
+
+
+
+<p>7. Under Projects: click the checkbox next to the pom.xml file</p>
+
+
+
+
+
+
+
+<p>8. Click Finish</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

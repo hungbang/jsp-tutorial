@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>114-faq-how-to-add-search-features-to-the-app</title>
+</head>
+<body>
+<div class="asset-container">
+    <div class="asset-container__padding article-view">
+        <div class="w3c-default">
+            <p><strong>FAQ: How to add Search features to the App?</strong></p>
+
+<p>A number of students have asked how to add search features to the app? I'll walk through this process.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Basically, we will allow the user to search for a customer by name. We'll add a search box at to the screen and the user can enter a name. On the backend, we'll compare this name to the customer's first name or last name.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure><img src="https://udemy-images.s3.amazonaws.com:443/redactor/2017-02-25_17-38-28-c9791e2c8dcc385d77a4253e6d150d1f/jsp-search-form.png"></figure>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>Overview of Development Process</strong><br>1. Create the HTML form<br>2. Add routing logic in StudentControllerServlet<br>3. Add method in the StudentDbUtil to perfom search</p>
+
+
+
+
+
+
+
+
+
+
+
+<p><br></p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>Download Source Code</strong><br>All of the complete solution code is available for download here. </p>
+
+
+
+
+
+
+
+
+
+
+
+<p><a href="http://www.luv2code.com/downloads/udemy-jsp/jsp-student-tracker-bonus-search.zip" rel="nofollow">http://www.luv2code.com/downloads/udemy-jsp/jsp-student-tracker-bonus-search.zip</a></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>I show you the detailed steps below so you can see what is added to each file.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p><br></p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>Detailed Steps</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>1. Create the HTML form</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>You need to add a search form to read the user input and submit it to your Spring controller mapping</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>a. Edit the file: <strong>list-students.jsp</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>b. Add a search form right after the search button</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">         &lt;!--  add a search box --&gt;
+            &lt;form action="StudentControllerServlet" method="GET"&gt;
+        
+                &lt;input type="hidden" name="command" value="SEARCH" /&gt;
+            
+                Search student: &lt;input type="text" name="theSearchName" /&gt;
+                
+                &lt;input type="submit" value="Search" class="add-student-button" /&gt;
+            
+            &lt;/form&gt;</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>This sends over a search request to our StudentControllerServlet. It includes theSearchName that the user entered. </p>
+
+
+
+<p>The form also includes a hidden form field for the "SEARCH" command. This is a similar pattern we used in the previous servlet controller code for list, add, update and delete.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>---</p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>2. Add routing logic in StudentControllerServlet</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>You need to add routing logic in the StudentControllerServlet to handle the search form submission</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>a. Edit the file: <strong>StudentControllerServlet.java</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>b. Move to the doGet() method. Add the following code in your switch statement. This should appear right after the code for delete. But it should appear BEFORE the "default" case.            <br></p>
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">case "SEARCH":
+                searchStudents(request, response);
+                break;</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p><br></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Your code fragment in this section should look like.          <br></p>
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">  case "DELETE":
+                deleteStudent(request, response);
+                break;
+            case "SEARCH":
+                searchStudents(request, response);
+                break;
+                
+            default:
+                listStudents(request, response);
+            }</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>c. You may have syntax errors on call for "searchStudents", but we'll resolve that in the next step.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>d. In your servlet, add the new search method</p>
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">    private void searchStudents(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // read search name from form data
+        String theSearchName = request.getParameter("theSearchName");
+        
+        // search students from db util
+        List&lt;Student&gt; students = studentDbUtil.searchStudents(theSearchName);
+        
+        // add students to the request
+        request.setAttribute("STUDENT_LIST", students);
+                
+        // send to JSP page (view)
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/list-students.jsp");
+        dispatcher.forward(request, response);
+    }</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>e. You may have syntax errors on the studentDbUtil, but we'll resolve that in the next section.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>---</p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>3. Add method in the StudentDbUtil to perfom search</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Now, we'll add methods in the StudentDbUtil to search for a student by first name or last name</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>a. Edit the file: <strong>StudentDbUtil.java</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>b. Add the method:</p>
+
+
+
+
+
+
+
+
+
+
+
+<pre class="prettyprint linenums">    public List&lt;Student&gt; searchStudents(String theSearchName)  throws Exception {
+        List&lt;Student&gt; students = new ArrayList&lt;&gt;();
+        
+        Connection myConn = null;
+        PreparedStatement myStmt = null;
+        ResultSet myRs = null;
+        int studentId;
+        
+        try {
+            
+            // get connection to database
+            myConn = dataSource.getConnection();
+            
+            //
+            // only search by name if theSearchName is not empty
+            //
+            if (theSearchName != null &amp;&amp; theSearchName.trim().length() &gt; 0) {
+                // create sql to search for students by name
+                String sql = "select * from student where lower(first_name) like ? or lower(last_name) like ?";
+                // create prepared statement
+                myStmt = myConn.prepareStatement(sql);
+                // set params
+                String theSearchNameLike = "%" + theSearchName.toLowerCase() + "%";
+                myStmt.setString(1, theSearchNameLike);
+                myStmt.setString(2, theSearchNameLike);
+                
+            } else {
+                // create sql to get all students
+                String sql = "select * from student order by last_name";
+                // create prepared statement
+                myStmt = myConn.prepareStatement(sql);
+            }
+            
+            // execute statement
+            myRs = myStmt.executeQuery();
+            
+            // retrieve data from result set row
+            while (myRs.next()) {
+                
+                // retrieve data from result set row
+                int id = myRs.getInt("id");
+                String firstName = myRs.getString("first_name");
+                String lastName = myRs.getString("last_name");
+                String email = myRs.getString("email");
+                
+                // create new student object
+                Student tempStudent = new Student(id, firstName, lastName, email);
+                
+                // add it to the list of students
+                students.add(tempStudent);            
+            }
+            
+            return students;
+        }
+        finally {
+            // clean up JDBC objects
+            close(myConn, myStmt, myRs);
+        }
+    }</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>In this method, we need to check "theSearchName", this is the user input. We need to make sure it is not empty. If it is not empty then we will use it in the search query.  If it is empty, then we'll just ignore it and simply return all of the students.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>For the condition when "theSearchName" is not empty, then we use it to compare against the first name or last name. We also make use of the "like" clause and the "%" wildcard characters. This will allow us to search for substrings. For example, if we have students with last name of "Patel", "Patterson" ... then we can search for "Pat" and it will match on those names.  </p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Also, notice the query uses the lower case version of the values to make a case insensitive search. If you'd like to make a case sensitive search, then simply remove the lower references.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>You can read more on the SQL "like" clause here:<br><a href="https://www.w3schools.com/SQl/sql_like.asp" rel="nofollow">https://www.w3schools.com/SQl/sql_like.asp</a></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>---</p>
+
+
+
+
+
+
+
+
+
+
+
+<p><strong>4. Test the app</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Once you've made all of the updates then you can test your application.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>The app will now have the search form at the top. You can enter a name to search and the app will give you the desired results.</p>
+
+
+
+
+
+
+
+
+
+
+
+<p>Congrats!</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
